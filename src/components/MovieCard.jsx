@@ -2,18 +2,21 @@ import "../css/MovieCard.css";
 import { useMovieContext } from "../contexts/MovieContext";
 import noImage from "../assets/no_image_found.svg";
 
-function MovieCard({ movie }) {
+function MovieCard({ movie, onClick }) {
   const { isFavorite, addToFavorites, removeFromFavorites } = useMovieContext();
   const favorite = isFavorite(movie.id);
+  var description = movie.overview;
+  if (!movie.overview) description = "No description available.";
 
   function onFavoriteClick(e) {
     e.preventDefault();
+    e.stopPropagation();
     if (favorite) removeFromFavorites(movie.id);
     else addToFavorites(movie);
   }
 
   return (
-    <div className="movie-card">
+    <div className="movie-card" onClick={() => onClick(movie.id)}>
       <div className="movie-poster">
         <img
           src={
@@ -35,6 +38,11 @@ function MovieCard({ movie }) {
       <div className="movie-info">
         <h3> {movie.title}</h3>
         <p>{movie.release_date?.split("-")[0]}</p>
+        <p>
+          {description.length > 100
+            ? description.slice(0, 100) + "..."
+            : description}
+        </p>
       </div>
     </div>
   );

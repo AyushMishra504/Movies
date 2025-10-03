@@ -1,4 +1,6 @@
 .movie-card {
+  margin: 0; /* remove any margin */
+  /* existing styles */
   position: relative;
   border-radius: 8px;
   overflow: hidden;
