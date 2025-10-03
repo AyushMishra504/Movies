@@ -38,11 +38,7 @@ function MovieCard({ movie, onClick }) {
       <div className="movie-info">
         <h3> {movie.title}</h3>
         <p>{movie.release_date?.split("-")[0]}</p>
-        <p>
-          {description.length > 100
-            ? description.slice(0, 100) + "..."
-            : description}
-        </p>
+        <p>{description}</p>
       </div>
     </div>
   );

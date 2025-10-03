@@ -16,6 +16,16 @@ function Home() {
   const [loading, setloading] = useState(true);
   const [genreFilter, setGenreFilter] = useState("");
   const location = useLocation();
+  const handleMovieClick = async (id) => {
+    try {
+      const details = await getMovieDetails(id);
+      setExpandedMovie(details);
+    } catch (e) {
+      console.error("Failed to fetch movie details", e);
+    }
+  };
+
+  const handleCloseDetails = () => setExpandedMovie(null);
   const genres = [
     { id: 28, name: "Action" },
     { id: 12, name: "Abenteuer" },
@@ -101,10 +111,11 @@ function Home() {
   };
   const filteredMovies = movies.filter((movie) => {
     if (!genreFilter) {
-      // ✅ no genre selected → show movies that match search
-      return movie.title.toLowerCase().startsWith(searchQuery.toLowerCase());
+      // no genre selected
+      const trimmedQuery = searchQuery.trim().toLowerCase();
+      return movie.title.toLowerCase().includes(trimmedQuery);
     } else {
-      // ✅ genre selected → only show movies from that genre
+      // genre selected
       return movie.genre_ids?.includes(Number(genreFilter));
     }
   });
@@ -145,20 +156,9 @@ function Home() {
         <div className="loading">Loading... </div>
       ) : (
         <div className="movies-grid">
-          {movies
-            .filter((movie) => {
-              if (!genreFilter) {
-                return movie.title
-                  .toLowerCase()
-                  .startsWith(searchQuery.toLowerCase());
-              } else {
-                //filter by genre
-                return movie.genre_ids?.includes(Number(genreFilter));
-              }
-            })
-            .map((movie) => (
-              <MovieCard movie={movie} key={movie.id}></MovieCard>
-            ))}
+          {filteredMovies.map((movie) => (
+            <MovieCard movie={movie} key={movie.id}></MovieCard>
+          ))}
         </div>
       )}
     </div>
