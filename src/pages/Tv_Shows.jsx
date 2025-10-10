@@ -7,10 +7,12 @@ import {
   getPopularMovies,
   getMoviesByGenre,
   getPopularTVShows,
+  getTVShowsByGenre,
+  searchTVShows,
 } from "../services/api";
 import filter_icon from "../assets/filter_icon.png";
 
-function Home() {
+function Tv_shows() {
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
@@ -20,40 +22,37 @@ function Home() {
 
   const handleCloseDetails = () => setExpandedMovie(null);
   const genres = [
-    { id: 28, name: "Action" },
-    { id: 12, name: "Abenteuer" },
+    { id: 10759, name: "Action & Adventure" },
     { id: 16, name: "Animation" },
     { id: 35, name: "Komödie" },
     { id: 80, name: "Krimi" },
     { id: 99, name: "Dokumentarfilm" },
     { id: 18, name: "Drama" },
     { id: 10751, name: "Familie" },
-    { id: 14, name: "Fantasy" },
-    { id: 36, name: "Historie" },
-    { id: 27, name: "Horror" },
-    { id: 10402, name: "Musik" },
+    { id: 10762, name: "Kids" },
     { id: 9648, name: "Mystery" },
-    { id: 10749, name: "Liebesfilm" },
-    { id: 878, name: "Science Fiction" },
-    { id: 10770, name: "TV-Film" },
-    { id: 53, name: "Thriller" },
-    { id: 10752, name: "Kriegsfilm" },
+    { id: 10763, name: "News" },
+    { id: 10764, name: "Reality" },
+    { id: 10765, name: "Sci-Fi & Fantasy" },
+    { id: 10766, name: "Soap" },
+    { id: 10767, name: "Talk" },
+    { id: 10768, name: "War & Politics" },
     { id: 37, name: "Western" },
   ];
 
   //to clear search bar and reset genre when any link is pressed
   useEffect(() => {
-    if (location.pathname === "/") {
+    if (location.pathname === "/tvshows") {
       setSearchQuery("");
       setGenreFilter("");
     }
 
     const loadPopularMovies = async () => {
       try {
-        const popularMovies = await getPopularMovies();
+        const popularMovies = await getPopularTVShows();
         setMovies(popularMovies);
       } catch (e) {
-        setError("Failed to load movies...");
+        setError("Failed to load TV shows...");
         console.log(e);
       } finally {
         setloading(false);
@@ -69,9 +68,9 @@ function Home() {
       try {
         let results;
         if (!genreFilter) {
-          results = await getPopularMovies();
+          results = await getPopularTVShows();
         } else {
-          results = await getMoviesByGenre(genreFilter); // ✅ fetch by genre
+          results = await getTVShowsByGenre(genreFilter); // ✅ fetch by genre
         }
         setMovies(results);
         setError(null);
@@ -92,7 +91,7 @@ function Home() {
     if (loading) return;
     setloading(true);
     try {
-      const searchResults = await searchMovies(searchQuery);
+      const searchResults = await searchTVShows(searchQuery);
       setMovies(searchResults);
       setError(null);
     } catch (e) {
@@ -106,7 +105,7 @@ function Home() {
     if (!genreFilter) {
       // no genre selected
       const trimmedQuery = searchQuery.trim().toLowerCase();
-      return movie.title.toLowerCase().includes(trimmedQuery);
+      return movie.name.toLowerCase().includes(trimmedQuery);
     } else {
       // genre selected
       return movie.genre_ids?.includes(Number(genreFilter));
@@ -118,7 +117,7 @@ function Home() {
       <form onSubmit={handleSearch} className="search-form">
         <input
           type="text"
-          placeholder="Search for movies..."
+          placeholder="Search for TV Shows..."
           className="search-input"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -158,4 +157,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Tv_shows;
